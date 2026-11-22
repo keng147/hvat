@@ -38,6 +38,11 @@ const clamp = (value, min, max) => THREE.MathUtils.clamp(Math.floor(Number(value
 // накрутить можно, улучшения за звёзды нет: их список при каждом входе присылает сервер. Вредит накрутка только
 // самому игроку; когда появится таблица лидеров, баланс переедет на сервер.
 const SAVE_KEY = 'hvat-save', DEVICE_KEY = 'hvat-device';
+// Память страницы на телефоне общая для всех аккаунтов Telegram, поэтому копия прогресса на устройстве своя у каждого игрока.
+// Облако Telegram и так у каждого своё. Копия без номера игрока, сделанная до этого, внутри Telegram не читается:
+// неизвестно, чья она, а свой прогресс игрок получит из облака.
+const player = String(tg?.initDataUnsafe?.user?.id || '');
+const LOCAL_KEY = player ? SAVE_KEY + ':' + player : SAVE_KEY;
 const CLOUD_LIMIT = 4096, CLOUD_PAUSE = 5000, CLOUD_TIMEOUT = 4000, CLOUD_TRIES = 3, CLOUD_RETRY = 2000;
 const cloud = atLeast('6.9') ? tg.CloudStorage : null;
 // Метка устройства: по ней узнаём в облаке собственную запись, на которую не дошло подтверждение.
@@ -131,7 +136,7 @@ function weekEggs() {
 let cloudTimer = 0;
 let afterAdopt = () => {}; // игра подставляет сюда перестройку сцены под принятое сохранение
 function storeLocal() {
-  try { localStorage.setItem(SAVE_KEY, JSON.stringify(save)); } catch {}
+  try { localStorage.setItem(LOCAL_KEY, JSON.stringify(save)); } catch {}
 }
 // Дочитывает облако. Отвечает, удалось ли его прочитать.
 function pullCloud() {
@@ -1384,7 +1389,7 @@ function start() {
 
 let cloudSettled = false;
 try {
-  const local = readSave(localStorage.getItem(SAVE_KEY));
+  const local = readSave(localStorage.getItem(LOCAL_KEY));
   if (local) adopt(local);
 } catch {}
 let ready = true;
