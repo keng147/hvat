@@ -1,7 +1,7 @@
 // Покупки за звёзды и уведомления: общение с сервером (server/Code.gs).
 
 // Адрес веб-приложения Apps Script, заканчивается на /exec. Пока пусто, покупки и уведомления выключены.
-const API_URL = '';
+const API_URL = 'https://script.google.com/macros/s/AKfycbwQez1WMflwul8KPDSrGEDrSFuxikqQkapaXucgqNWvrr7gHx-Jnfi2kIjbU2wWbG2l/exec';
 const SYNC_TRIES = 6, SYNC_PAUSE = 1500;
 const PLAN_PAUSE = 60000; // план уведомлений уходит не чаще раза в минуту: сервер у всех игроков один
 
